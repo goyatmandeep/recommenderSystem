@@ -10,8 +10,8 @@ imageLinks=[]
 article=[]
 linkslist = list(links["imdbId"])
 error_movieId = []
-with open("new_user.csv", 'w') as new_user:
-    writer = csv.writer(new_user)
+with open("movies_info.csv", 'w') as movies_info:
+    writer = csv.writer(movies_info)
     writer.writerows([["movieId", "imgLink", "summary"]])
     for i in range(resume,len(linkslist)):         # Will save the data after 10 scrap
         try:
@@ -25,4 +25,4 @@ with open("new_user.csv", 'w') as new_user:
             writer.writerows([[moviesoriginal["num"][i+1], image['src'], article]])
         except:
             error_movieId.append(moviesoriginal["num"][i+1])
-new_user.close()
+movies_info.close()
