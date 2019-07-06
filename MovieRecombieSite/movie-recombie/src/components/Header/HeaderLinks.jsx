@@ -112,8 +112,8 @@ function handleFocus(){
                   style={{margin:20}}
                   color="rose"
                   size="lg"
-                  href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ref=creativetim"
                   target="_blank"
+                  onClick={props.SubmitFunc}
                 >
                   <i className="fas fa-play" />
                    {props.rating > 4 ?  "Submit Ratings" : "Rate atlest 5 movies" }

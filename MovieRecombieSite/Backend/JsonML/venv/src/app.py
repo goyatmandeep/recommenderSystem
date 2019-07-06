@@ -6,6 +6,8 @@ from flask_cors import CORS
 app=Flask(__name__)
 CORS(app)
 result = pd.read_csv('./movies.csv',skiprows=1,names=["number","movie","genre"])
+links_summary = pd.read_csv('./movies.csv',skiprows=1,names=["links","summary","extra"])
+
 genres= result["genre"]
 genres=list(set(list(genres)))
 genre=[]
@@ -20,7 +22,12 @@ movies_sort =[[] for y in range(27)]
 for i in range(len(rows)):
 	pos=ord(rows[i][0].lower())%97 if ord(rows[i][0].lower())%97 < 26 else 26
 	movies_sort[pos].append(rows[i])
-
+@app.route("/predict",methods=['POST'])
+def predict():
+	print("WORKING")
+	print(request.get_data());
+	print(type(request.get_data()));
+	return json.dumps("request.data")
 @app.route('/')
 def hello_world():
 	rows=list(result["movie"])

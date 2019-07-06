@@ -139,6 +139,15 @@ class LandingPage extends React.Component {
       })
   }
 }
+submitTheData=()=>{
+  fetch('http://localhost:8002/predict', {
+    method: 'post',
+    body: JSON.stringify(this.state.ratingData)
+  }).then(function(response) {
+    return response.json();
+  }).then(function(data) {console.log(data)
+  });
+}
   change=(name,rating)=>{
     let movieobject= this.state.ratingData;
     movieobject[name]=rating;
@@ -203,6 +212,7 @@ class LandingPage extends React.Component {
           color="transparent"
           brand="MovieRecombe"
           links={<HeaderLinks  
+            SubmitFunc={this.submitTheData}
             searchFor={this.searchFor}  
           rating={this.state.ratedmovies}
           dropdownHoverColor="info" />}
