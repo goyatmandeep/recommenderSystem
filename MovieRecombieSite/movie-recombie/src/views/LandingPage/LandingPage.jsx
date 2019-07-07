@@ -190,7 +190,7 @@ submitTheData=()=>{
     }
    
    const main=this.state.result !=null ? this.state.result.map(data=>{
-     return <MovieCards state={this.change} title={data} movieId={1001}/>
+     return <MovieCards state={this.change} title={data[0]} movieId={data[4]} imageLink={data[1]} summaryData={data[2]}/>
    }):null
    var jk=-1
    const maingenre=this.state.genres_all !=null ? this.state.genres_all.map(data=>{

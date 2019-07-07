@@ -33,7 +33,7 @@ this.state={
                 component="img"
                 alt={this.props.title}
                 height="140"
-                image="https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_QL50_SY1000_SX670_AL_.jpg"
+                image={this.props.imageLink}
                 title={this.props.title}
               />
               <CardContent>
@@ -41,8 +41,7 @@ this.state={
                 {this.props.title}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                  across all continents except Antarctica
+                {this.props.summaryData}
                 </Typography>
               </CardContent>
             </CardActionArea>
