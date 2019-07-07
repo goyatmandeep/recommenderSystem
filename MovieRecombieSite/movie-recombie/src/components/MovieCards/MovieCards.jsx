@@ -53,7 +53,7 @@ this.state={
           changeRating={this.changeRating}
           numberOfStars={5}
           starRatedColor="purple"
-          name={this.props.title}d
+          name={this.props.movieId}
           starDimension="20px"
           starSpacing="1px"
         />
