@@ -104,7 +104,7 @@ class LandingPage extends React.Component {
   handleMultiple =async (event) => {
 
     var genresUrl= 'http://localhost:8002/genre/'
-    
+    var madeUP=''
     if(event.target.value[0]==100){
       event.target.value.shift();
     }
@@ -115,12 +115,14 @@ class LandingPage extends React.Component {
     });
     await  this.state.multipleSelect.map(data=>{
       console.log(data)
-      genresUrl=genresUrl + this.state.genres_all[data]+"&"
+      madeUP=madeUP + this.state.genres_all[data]+"&"
     })
+    genresUrl=genresUrl+madeUP;
     await console.log(genresUrl)
     await  fetch(genresUrl).then(a=>a.json()).then(data=>{
       this.setState({
-        result:data
+        result:data,
+        genre:madeUP
       })
     }).catch(err=>{
       console.log("A small error maybe")
@@ -130,6 +132,16 @@ class LandingPage extends React.Component {
   loadnextPage=(pagenumber)=>{
     if(this.state.lowpageloading){
     fetch("http://localhost:8002/alpha/"+this.state.character+"?page="+pagenumber).then(a=>a.json()).then(data=>{
+       this.setState({
+         result:data,
+         page:pagenumber,
+         
+       })
+       
+      })
+  }
+  else{
+    fetch("http://localhost:8002/genre/"+this.state.genre+"?page="+pagenumber).then(a=>a.json()).then(data=>{
        this.setState({
          result:data,
          page:pagenumber,
