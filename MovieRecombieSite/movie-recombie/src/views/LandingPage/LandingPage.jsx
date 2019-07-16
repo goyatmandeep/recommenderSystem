@@ -51,7 +51,8 @@ class LandingPage extends React.Component {
     this.setState({ 
       [event.target.name]: event.target.value ,
       lowpageloading:true,
-      multipleSelect:[100]
+      multipleSelect:[100],
+      searching:false
 
     });
     
@@ -74,6 +75,7 @@ class LandingPage extends React.Component {
          multipleSelect:[100],
          lowpageloading:false,
          simpleSelect:100,
+         searching:true
        })
 
     }).catch(err=>{console.log("NOt FOund")})
@@ -92,7 +94,8 @@ class LandingPage extends React.Component {
       ratedmovies:0,
       ratingData:{},
       dialog:false,
-      recommendedMovies:[]
+      recommendedMovies:[],
+      searching:false
     }
 
   
@@ -132,6 +135,7 @@ class LandingPage extends React.Component {
     await this.setState({ 
       multipleSelect: event.target.value,    
       simpleSelect:100,
+      searching:false,
       lowpageloading:false
     });
     await  this.state.multipleSelect.map(data=>{
@@ -146,7 +150,6 @@ class LandingPage extends React.Component {
         genre:madeUP
       })
     }).catch(err=>{
-      console.log("A small error maybe")
     })
 
   };
@@ -160,6 +163,9 @@ class LandingPage extends React.Component {
        })
        
       })
+  }
+  else if(this.state.searching){
+
   }
   else{
     fetch("http://localhost:8002/genre/"+this.state.genre+"?page="+pagenumber).then(a=>a.json()).then(data=>{
@@ -203,7 +209,6 @@ submitTheData=async ()=>{
   change=(name,rating)=>{
     let movieobject= this.state.ratingData;
     movieobject[name]=rating;
-    console.log(movieobject);
     this.setState({
       ratingData:movieobject
     })
@@ -240,7 +245,6 @@ submitTheData=async ()=>{
       );
       c=String.fromCharCode(c.charCodeAt(0) + 1);
     }
-   
    const main=this.state.result !=null ? this.state.result.map(data=>{
      return <MovieCards state={this.change} title={data[0]} movieId={data[4]} imageLink={data[1]} summaryData={data[2]}/>
    }):null
@@ -257,7 +261,6 @@ submitTheData=async ()=>{
     {data}
   </MenuItem>
   }):null
-    console.log(this.state.recommendedMovies)
     return (
       <div>
           <Dialog
