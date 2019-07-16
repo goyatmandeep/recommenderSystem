@@ -19,7 +19,7 @@ actual_rating = pd.read_excel("actual_rating.xlsx")
 avg_rating = np.nanmean(actual_rating.iloc[:,1:], axis=1)
 temp = np.isnan(avg_rating)
 avg_rating[temp] = 0
-    
+
 def reg_cost(theta_new2, *tup):
     theta_new = theta_new2.reshape(N_FEATURES, 1)
     new_user_rating, reg_con, movie_vector = tup
@@ -35,7 +35,7 @@ def reg_gradient(theta_new2, *tup):
     temp2[nan_loc] = 0
     theta_new_grad = np.dot(temp2.T, movie_vector.iloc[:,1:])+LAMBDA*theta_new.T
     return theta_new_grad.reshape(N_FEATURES)
-    
+
 def train_user(json_data, movie_vector, avg_rating):
     temp = json_data
     theta_new = np.random.rand(N_FEATURES)
@@ -46,8 +46,8 @@ def train_user(json_data, movie_vector, avg_rating):
     tup = new_user_rating, LAMBDA, movie_vector
     optimal_theta = optimize.fmin_cg(reg_cost, theta_new, fprime=reg_gradient, args=tup, full_output=True)
     return np.dot(movie_vector.iloc[:,1:], optimal_theta[0].reshape(10, 1))+avg_rating.reshape(len(avg_rating), 1)
-    
-    
+
+
 
 
 
@@ -70,7 +70,6 @@ all_data= pd.merge(result,links_summary,on="movieId")[["movie","imgLink","summar
 real_data= all_data
 all_data=list(real_data.values)
 all_data=list(map(list,all_data))
-
 sorted_data=sorted(all_data,key=lambda all_data:all_data[0])
 
 movies_sort =[[] for y in range(27)]
@@ -91,7 +90,7 @@ def predict():
 	#print(type(request.get_data()));
 	#with open('new_user_rating.json', 'w') as json_file:
 	#	json.dump(temp, json_file)
-	return pd.DataFrame.to_string(recommend_movieId)
+	return json.dumps(pd.DataFrame.to_string(recommend_movieId))
 
 
 @app.route('/')
@@ -117,7 +116,13 @@ def searchResult(search):
 		if (search.lower() in movies_sort[pos][i][0].lower().decode("utf-8")):
 			result.append(movies_sort[pos][i])
 	return json.dumps(result)
-
+@app.route('/movieid/<search>')
+def MovieSearch(search):
+    result=[]
+    for i in range(len(all_data)):
+        b=int(search) ==int(all_data[i][4])
+        if b:
+	           return json.dumps(all_data[i])
 @app.route('/genre/<search>')
 def genreResult(search):
 	page= request.args.get("page");

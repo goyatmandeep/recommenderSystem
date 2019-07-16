@@ -27,7 +27,12 @@ import Button from "components/CustomButtons/Button.jsx";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 import Parallax from "components/Parallax/Parallax.jsx";
 import NavPills from "components/NavPills/NavPills.jsx";
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 import landingPageStyle from "assets/jss/material-kit-pro-react/views/landingPageStyle.jsx";
 import MoviesCards from 'components/MovieCards/MovieCards'
 // Sections for this page
@@ -85,8 +90,13 @@ class LandingPage extends React.Component {
       main:<div>LOADING</div>,
       page:1,
       ratedmovies:0,
-      ratingData:{}
+      ratingData:{},
+      dialog:false,
+      recommendedMovies:[]
     }
+
+  
+
     fetch("http://localhost:8002/alpha/"+this.state.character).then(a=>a.json()).then(data=>{
        this.setState({
          result:data
@@ -100,6 +110,17 @@ class LandingPage extends React.Component {
     })
     this.getDocHeight()
 
+  }
+  handleClickOpen=()=> {
+    this.setState({
+      dialog:true
+    })
+  }
+
+  handleClose=()=> {
+    this.setState({
+      dialog:false
+    })
   }
   handleMultiple =async (event) => {
 
@@ -151,14 +172,33 @@ class LandingPage extends React.Component {
       })
   }
 }
-submitTheData=()=>{
+submitTheData=async ()=>{
   fetch('http://localhost:8002/predict', {
     method: 'post',
     body: JSON.stringify(this.state.ratingData)
   }).then(function(response) {
-    return response.json();
-  }).then(function(data) {console.log(data)
-  });
+    return response.json()
+  }).then(async (data)=>{
+    data=data.trim().split("   ")
+    data.shift()
+   var l =[]
+   await  data.map(async (d)=>{
+      await fetch("http://localhost:8002/movieid/"+d.split("\n")[0]).then(async(blob)=>await blob.json())
+      .then(async (reality)=>{
+    
+        this.setState({ recommendedMovies: [...this.state.recommendedMovies, <MovieCards state={this.change} title={reality[0]} movieId={reality[4]} imageLink={reality[1]} summaryData={reality[2]}/> ] }) 
+        
+      
+      })
+      .catch(err=>{
+        return undefined;
+      })
+     
+    })
+ 
+  await  this.handleClickOpen();
+  })
+
 }
   change=(name,rating)=>{
     let movieobject= this.state.ratingData;
@@ -217,9 +257,27 @@ submitTheData=()=>{
     {data}
   </MenuItem>
   }):null
-    
+    console.log(this.state.recommendedMovies)
     return (
       <div>
+          <Dialog
+          fullWidth={1000}
+          maxWidth={1366}
+        open={this.state.dialog}
+        keepMounted
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{"Movies you would like : "}</DialogTitle>
+        <DialogContent>
+        <Grid container spacing={3} style={{padding:10}} >
+        {this.state.recommendedMovies}
+        </Grid>
+
+</DialogContent>
+
+      </Dialog>
         <Header
           color="transparent"
           brand="MovieRecombe"

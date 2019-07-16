@@ -35,7 +35,7 @@ def optimal_x_theta(y_arr, N_FEATURES, LAMBDA, freq_random):
         theta_arr = optimal[0][x_size:].reshape(y_arr.shape[1], N_FEATURES)
     return x_arr, theta_arr, optimal[1]
 
-def create_genre_file(movies):
+def create_genre_file(movies):                #Create the table for genre of the movies
     temp = pd.DataFrame(movies["movieId"], index=range(len(movies)))
     for i in range(len(movies)):
         cat = movies["genres"][i].split("|")
@@ -47,7 +47,7 @@ def create_genre_file(movies):
                 temp[item].iloc[i] = 1
     temp.fillna(0, inplace=True)
     temp.to_excel("genre.xlsx")
-    return 
+    return
 
 def movies_users_table(movies, ratings, n_movies):
     y = pd.DataFrame([], index=movies["movieId"])
@@ -104,8 +104,8 @@ def RMSE(test_set):
         rmse = np.sqrt(rmse)/len(test_set)
     return rmse
 
-movies_loc = r"ml-latest-small\movies.csv"
-ratings_loc = r"ml-latest-small\ratings.csv"
+movies_loc = "ml-latest-small/movies.csv"
+ratings_loc = "ml-latest-small/ratings.csv"
 
 movies = pd.read_csv(movies_loc)
 ratings = pd.read_csv(ratings_loc)
@@ -120,7 +120,7 @@ y.to_excel("actual_rating.xlsx")
 y_arr = y.drop(["movieId"], axis=1)
 y_arr = y_arr.values
 
-test_set = split_train_set(1)      
+test_set = split_train_set(1)
 avg_rating = np.nanmean(y_arr, axis=1)
 temp = np.isnan(avg_rating)
 avg_rating[temp] = 0
