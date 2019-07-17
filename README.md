@@ -9,7 +9,7 @@ RMSE on test set = 0.1522
 Number of random initialization on training set = 5 (FREQ_RANDOM)
 fmin_cg best value - 222815.54 
 
-
+#TODO : 
 **Online learning is yet to be enabled.
 **New users are still not assigned permanent ids and their learned parameters are discarded after their session ends.
 **Item based and user based strategy can be integerated to get better recommendations.
