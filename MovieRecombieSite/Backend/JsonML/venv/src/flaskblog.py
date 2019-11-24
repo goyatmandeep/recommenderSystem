@@ -1,4 +1,9 @@
-from flask import Flask,request,render_template
+from flask import Flask,request, render_template, url_for, flash, redirect
+from forms import RegistrationForm, LoginForm
+from flask_mysqldb import MySQL
+from flask_bcrypt import Bcrypt
+from wtforms.validators import ValidationError
+from config import mysql
 import pandas as pd
 import json
 from flask_cors import CORS
@@ -6,6 +11,67 @@ import pandas as pd
 import numpy as np
 import json
 from scipy import optimize
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
+bcrypt = Bcrypt(app)
+
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'user'
+
+mysql.init_app(app)
+'''mysql = MySQL()
+
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'user'
+
+mysql.init_app(app)'''
+
+@app.route("/")
+@app.route("/home")
+def home():
+    return render_template('home.html')
+
+
+@app.route("/about")
+def about():
+    return render_template('about.html', title='About')
+
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        cur = mysql.connection.cursor()
+        cur.execute('''INSERT INTO login(username, password, email)VALUES(%s, %s, %s)''', (form.username.data, hashed_password, form.email.data))
+        mysql.connection.commit()
+        cur.close()
+        flash('Account created for {}!'.format(form.username.data), 'success')
+        return redirect(url_for('home'))
+        flash('Some error occured while registering you.')
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        cur = mysql.connection.cursor()
+        if  cur.execute('''SELECT password FROM login WHERE username=%s''',(form.username.data,)):
+            db_password = cur.fetchall()
+            print(type(db_password), db_password)
+            if bcrypt.check_password_hash(db_password[0][0], form.password.data):
+                flash('Welcome {}!'.format(form.username.data), 'success')
+                return redirect(url_for('home'))
+        flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+
 
 N_FEATURES = 10
 LAMBDA = 10
@@ -151,5 +217,7 @@ def login():
 @app.route('/register')
 def register():
 	return render_template('./register.html',title="register")
-if __name__ == "__main__":
-	app.run(host="127.0.0.1",port=8002)
+
+
+if __name__ == '__main__':
+    app.run(host="127.0.0.1",port=8002,debug=True)

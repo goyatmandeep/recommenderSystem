@@ -118,7 +118,27 @@ function handleFocus(){
                   <i className="fas fa-play" />
                    {props.rating > 4 ?  "Submit Ratings" : "Rate atlest 5 movies" }
                 </Button>
+             
               </Tooltip>
+              <Button
+                  color="rose"
+                  size="lg"
+                  href="http://localhost:8002/login"
+                 
+                >
+                  <i className="fas fa-sign-in-alt  " />
+                 Login
+                </Button>
+                <Button
+                  color="rose"
+                  size="lg"
+                  href="http://localhost:8002/register"
+                
+                  style={{marginLeft:30,marginRight:40}}
+                >
+                  <i className="fas fa-cash-register" />
+                 Register
+                </Button>
     </List>
   );
 }
