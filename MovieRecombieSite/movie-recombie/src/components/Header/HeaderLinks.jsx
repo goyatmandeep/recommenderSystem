@@ -124,7 +124,7 @@ function handleFocus(){
                   color="rose"
                   size="lg"
                   href="http://localhost:8002/login"
-                 
+                 target="_self"
                 >
                   <i className="fas fa-sign-in-alt  " />
                  Login
@@ -133,7 +133,7 @@ function handleFocus(){
                   color="rose"
                   size="lg"
                   href="http://localhost:8002/register"
-                
+                  target="_self"
                   style={{marginLeft:30,marginRight:40}}
                 >
                   <i className="fas fa-cash-register" />
